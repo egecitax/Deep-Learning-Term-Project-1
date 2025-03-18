@@ -1,4 +1,4 @@
-BankNote Authentication using Neural Networks
+#BankNote Authentication using Neural Networks
 
 Introduction
 
