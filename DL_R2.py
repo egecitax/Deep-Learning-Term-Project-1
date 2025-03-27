@@ -76,7 +76,7 @@ class NeuralNetwork:
         A2 = sigmoid(Z2)
         return A2.T, {"Z1": Z1, "A1": A1, "Z2": Z2, "A2": A2}
 
-        def back_propagation(self, X, Y, cache):
+    def back_propagation(self, X, Y, cache):
         m = X.shape[0]
         grads = {}
 
