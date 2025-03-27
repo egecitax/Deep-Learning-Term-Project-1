@@ -76,37 +76,45 @@ class NeuralNetwork:
         A2 = sigmoid(Z2)
         return A2.T, {"Z1": Z1, "A1": A1, "Z2": Z2, "A2": A2}
 
-    def back_propagation(self, X, Y, cache):
+        def back_propagation(self, X, Y, cache):
         m = X.shape[0]
         grads = {}
 
         A1 = cache["A1"]
         Z1 = cache["Z1"]
 
-        if "A3" in cache:
+        # Aktivasyon türev fonksiyonu seçimi
+        if self.activation == "tanh":
+            act_derivative = tanh_derivative
+        elif self.activation == "relu":
+            act_derivative = relu_derivative
+        else:
+            raise ValueError(f"Unsupported activation function: {self.activation}")
+
+        if "A3" in cache:  # 3-layer
             A2, A3 = cache["A2"], cache["A3"]
             dZ3 = A3 - Y.T
             grads["dW3"] = (1 / m) * np.dot(dZ3, A2.T)
             grads["db3"] = (1 / m) * np.sum(dZ3, axis=1, keepdims=True)
 
             dA2 = np.dot(self.parameters["W3"].T, dZ3)
-            dZ2 = dA2 * tanh_derivative(A2)
+            dZ2 = dA2 * act_derivative(A2)
             grads["dW2"] = (1 / m) * np.dot(dZ2, A1.T)
             grads["db2"] = (1 / m) * np.sum(dZ2, axis=1, keepdims=True)
 
             dA1 = np.dot(self.parameters["W2"].T, dZ2)
-            dZ1 = dA1 * tanh_derivative(A1)
+            dZ1 = dA1 * act_derivative(A1)
             grads["dW1"] = (1 / m) * np.dot(dZ1, X)
             grads["db1"] = (1 / m) * np.sum(dZ1, axis=1, keepdims=True)
 
-        else:  # 2-Layer modeli için
+        else:  # 2-layer
             A2 = cache["A2"]
             dZ2 = A2 - Y.T
             grads["dW2"] = (1 / m) * np.dot(dZ2, A1.T)
             grads["db2"] = (1 / m) * np.sum(dZ2, axis=1, keepdims=True)
 
             dA1 = np.dot(self.parameters["W2"].T, dZ2)
-            dZ1 = dA1 * tanh_derivative(A1)
+            dZ1 = dA1 * act_derivative(A1)
             grads["dW1"] = (1 / m) * np.dot(dZ1, X)
             grads["db1"] = (1 / m) * np.sum(dZ1, axis=1, keepdims=True)
 
